@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
-#include <set>
-
+using namespace std;
 class Bus
 {
 private:
@@ -13,7 +12,7 @@ private:
 public:
 	Bus()
 	{
-		
+		number = 0;
 	}
 	Bus(int number, std::string type, std::string destination, std::string startTime, std::string endTime)
 	{
@@ -76,5 +75,11 @@ public:
 	std::string getEndTime()
 	{
 		return endTime;
+	}
+	void print()
+	{
+		std::cout << number<< endl;
+		cout << type << endl;
+		cout << destination << endl;
 	}
 };
