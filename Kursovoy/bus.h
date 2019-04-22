@@ -76,10 +76,4 @@ public:
 	{
 		return endTime;
 	}
-	void print()
-	{
-		std::cout << number<< endl;
-		cout << type << endl;
-		cout << destination << endl;
-	}
-};
+	};
