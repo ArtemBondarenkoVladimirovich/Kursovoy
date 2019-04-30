@@ -39,13 +39,15 @@ private:
 	//Input data of bus and write to file
 	static void inputBus()
 	{
-		int number;
-		string type, destination, startTime, endTime;
+		string number,type, destination, startTime, endTime;
 		Bus bus;
 		system("cls");
 		cout << "¬ведите номер автобуса:" << endl;
-		cin >> number;
-		bus.setNumber(number);
+		do
+		{
+			cin >> number;
+		} while (!isInt(number));
+		bus.setNumber(stoi(number));
 		cout << "¬ведите тип автобуса:" << endl;
 		cin >> type;
 		bus.setType(type);
@@ -152,29 +154,42 @@ private:
 		}
 	}
 	//return correctness of input time
-	static bool isRightFormatTime(string s)
+	static bool isRightFormatTime(string time)
 	{
 		int hours;
 		int minutes;
-		if (s.size() < 5)
+		if (time.size() < 5 || !isInt(time.substr(0,2)) || !isInt(time.substr(3, 2)))
 		{
 			return false;
 		}
-		string str_hours = s.substr(0, 2);
-		string str_minutes = s.substr(3, 2);
-		hours = atoi(str_hours.c_str());
-		minutes = atoi(str_minutes.c_str());
+		string str_hours = time.substr(0, 2);
+		string str_minutes = time.substr(3, 2);
+		hours = stoi(str_hours);
+		minutes = stoi(str_minutes);
 		return !(hours < 0 || hours > 24 || minutes < 0 || minutes > 60);
 	}
 	//return time in trip
 	static int getTimeInPath(string start, string end)
 	{
-		return  atoi(end.substr(0, 2).c_str()) * 60 + atoi(end.substr(3, 2).c_str())
-			- atoi(start.substr(0, 2).c_str()) * 60 - atoi(start.substr(3, 2).c_str());
+		return  stoi(end.substr(0, 2)) * 60 + stoi(end.substr(3, 2))
+			- stoi(start.substr(0, 2)) * 60 - stoi(start.substr(3, 2));
 	}
 	//return time of trip in format HH часов mm минут for output on screen 
 	static string getTimeInPathForPrint(int time)
 	{
 		return to_string((time / 60)) + " часов  " + to_string((time % 60)) + " минут";
+	}
+	//checking string to integer
+	static bool isInt(string number)
+	{
+		try
+		{
+			stoi(number);
+			return true;
+		}
+		catch (invalid_argument & e)
+		{
+			return false;
+		}
 	}
 };
