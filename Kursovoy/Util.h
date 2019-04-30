@@ -9,10 +9,11 @@
 #include <ctime>
 
 using namespace std;
-static string path = "E:\\myBuses.txt";
+const static string PATH = "E:\\myBuses.txt";
 class Util
-{	
+{
 public:
+	//call main menu our program 
 	static int getMainMenu()
 	{
 		SetConsoleCP(1251);
@@ -25,163 +26,155 @@ public:
 		cout << "2.Список автобусов в заданном направлении" << endl;
 		cout << "3.Выход из программы" << endl;
 		cin >> i;
-			switch (i)
-			{
-				case '1':inputBus();break;
-				case '2':getChooseDirection();break;
-				case '3':exit(0);
-				default: break;
-			}
+		switch (i)
+		{
+		case '1':inputBus(); break;
+		case '2':getChooseDirection(); break;
+		case '3':exit(0);
+		default: break;
+		}
 		return 0;
 	}
 private:
+	//Input data of bus and write to file
 	static void inputBus()
 	{
 		int number;
 		string type, destination, startTime, endTime;
-		Bus* bus = new Bus;
+		Bus bus;
 		system("cls");
 		cout << "Введите номер автобуса:" << endl;
 		cin >> number;
-		bus->setNumber(number);
+		bus.setNumber(number);
 		cout << "Введите тип автобуса:" << endl;
 		cin >> type;
-		bus->setType(type);
+		bus.setType(type);
 		cout << "Введите пункт назначения:" << endl;
 		cin >> destination;
-		bus->setDestination(destination);
-		cout << "Введите время отправки в формате HH:MM" << endl;		
-		while (!isRighhtFormatTime(startTime))
+		bus.setDestination(destination);
+		cout << "Введите время отправки в формате HH:MM" << endl;
+		while (!isRightFormatTime(startTime))
 		{
 			cin >> startTime;
 		}
-		bus->setStartTime(startTime);
+		bus.setStartTime(startTime);
 		cout << "Введите время прибытия в формате HH:MM" << endl;
-		while (!isRighhtFormatTime((endTime)))
+		while (!isRightFormatTime((endTime)))
 		{
 			cin >> endTime;
 		}
-		bus->setEndTime(endTime);
+		bus.setEndTime(endTime);
 		writeInFile(bus);
 		getMainMenu();
 	}
+	//call menu input destination for search buses in current direction
 	static void getChooseDirection()
 	{
 		string destination;
 		system("cls");
 		cout << "Введите нужное направление" << endl;
 		cin >> destination;
-		if (readOfFile(path,destination).empty())
+		if (readOfFile(PATH, destination).empty())
 		{
 			cout << "Автобусов в данном направлении нет" << endl;
 		}
 		else {
 			cout << "Номер автобуса\t" << "Тип автобуса\t" << "Время в пути" << endl;
-			for (auto& it : readOfFile(path,destination))
+			for (auto& it : readOfFile(PATH, destination))
 			{
-				cout <<"      "<< to_string(it.second.getNumber()) + "\t"<< it.second.getType() + "\t"<< getTimeInPathForPrint(it.first) + "\t" << endl;
-			} 
+				cout << "      " << to_string(it.second.getNumber()) + "\t" << it.second.getType() + "\t" << getTimeInPathForPrint(it.first) + "\t" << endl;
+			}
 		}
 		goBackToMainMenu();
 
 	}
-	static void writeInFile(Bus* bus)
+	//write in file information about bus 
+	static void writeInFile(Bus bus)
 	{
 		ofstream fout;
-		fout.open(path, ofstream::app);
+		fout.open(PATH, ofstream::app);
 		if (!fout.is_open())
 		{
 			cout << "Ошибка открытия файла!" << endl;
 		}
 		else
 		{
-			fout << bus->getNumber() << "\t" << bus->getType() << "\t" << bus->getDestination() << "\t" << bus->getStartTime() << "\t" << bus->getEndTime() << endl;
+			fout << bus.getNumber() << "\t" << bus.getType() << "\t" << bus.getDestination() << "\t" << bus.getStartTime() << "\t" << bus.getEndTime() << endl;
 		}
 		fout.close();
 	}
-	static multimap<double,Bus> readOfFile(string path,string dest)
+	/*read bus out of file and put buses in current direction in multimap where key is time of trip ,
+	value is object of type Bus.Method return multimap<double,Bus>*/
+	static multimap<int, Bus> readOfFile(string path, string dest)
 	{
-		multimap<double, Bus> busesMap;
+		multimap<int, Bus> busesMap;
 		string line;
 		ifstream fin;
 		fin.open(path);
 		if (!fin.is_open())
 		{
-			cout << "Ошибка открытия файла!" << endl;			
+			cout << "Ошибка открытия файла!" << endl;
 		}
 		else
 		{
-			while (getline(fin,line))
+			while (getline(fin, line))
 			{
 				int number;
 				string type, destination, startTime, endTime;
 				istringstream iss(line);
 				iss >> number >> type >> destination >> startTime >> endTime;
-				Bus bus(number,type,destination,startTime,endTime);
+				Bus bus(number, type, destination, startTime, endTime);
 				if (bus.getDestination() == dest)
 				{
-					busesMap.insert(pair<double, Bus>(getTimeInPath(bus.getStartTime(),bus.getEndTime()), bus));
+					busesMap.insert(pair<int, Bus>(getTimeInPath(bus.getStartTime(), bus.getEndTime()), bus));
 				}
 			}
 		}
 		fin.close();
 		return busesMap;
 	}
-	 static void goBackToMainMenu()
-		{
+	//return to main menu
+	static void goBackToMainMenu()
+	{
 		char er;
 		cout << endl;
-		cout << "Введите 1 для возврата в главное меню" << endl;	
-			cin >> er;			
-			if (er == '1')
-			{
-				system("cls");
-				getMainMenu();
-			}
-			else
-			{
-				system(("cls"));
-				goBackToMainMenu();
-			}
+		cout << "Введите 1 для возврата в главное меню" << endl;
+		cin >> er;
+		if (er == '1')
+		{
+			system("cls");
+			getMainMenu();
 		}
-	static bool isRighhtFormatTime(string s)
+		else
+		{
+			system(("cls"));
+			goBackToMainMenu();
+		}
+	}
+	//return correctness of input time
+	static bool isRightFormatTime(string s)
 	{
 		int hours;
 		int minutes;
-		if (s.size()<5)
+		if (s.size() < 5)
 		{
 			return false;
 		}
 		string str_hours = s.substr(0, 2);
 		string str_minutes = s.substr(3, 2);
-			hours = atoi(str_hours.c_str());
-			minutes = atoi(str_minutes.c_str());
-
+		hours = atoi(str_hours.c_str());
+		minutes = atoi(str_minutes.c_str());
 		return !(hours < 0 || hours > 24 || minutes < 0 || minutes > 60);
 	}
-
-	static double getTimeInPath(string start,string end)
+	//return time in trip
+	static int getTimeInPath(string start, string end)
 	{
-		int hours = atoi(end.substr(0, 2).c_str()) - atoi(start.substr(0, 2).c_str());
-		int minutes = abs(atoi(end.substr(3, 2).c_str()) - atoi(start.substr(3, 2).c_str()));
-		return stod(to_string(hours) + "," + to_string(minutes));
+		return  atoi(end.substr(0, 2).c_str()) * 60 + atoi(end.substr(3, 2).c_str())
+			- atoi(start.substr(0, 2).c_str()) * 60 - atoi(start.substr(3, 2).c_str());
 	}
-
-	static string getTimeInPathForPrint(double time)
+	//return time of trip in format HH часов mm минут for output on screen 
+	static string getTimeInPathForPrint(int time)
 	{
-		string hours;
-		string minutes;
-		if (isdigit(to_string(time).at(1)))
-		{
-			hours = to_string(time).substr(0, 2);
-			minutes = to_string(time).substr(3, 2);
-		}
-		else
-		{
-			hours = to_string(time).substr(0, 1);
-			minutes = to_string(time).substr(2, 2);
-		}
-		return hours + " часов  " + minutes + " минут";
+		return to_string((time / 60)) + " часов  " + to_string((time % 60)) + " минут";
 	}
 };
-

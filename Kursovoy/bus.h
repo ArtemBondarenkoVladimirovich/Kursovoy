@@ -5,16 +5,16 @@ class Bus
 {
 private:
 	int number;
-	std::string type;
-	std::string destination;
-	std::string startTime;
-	std::string endTime;
+	string type;
+	string destination;
+	string startTime;
+	string endTime;
 public:
 	Bus()
 	{
-		number = 0;
+
 	}
-	Bus(int number, std::string type, std::string destination, std::string startTime, std::string endTime)
+	Bus(int number, string type, string destination, string startTime, string endTime)
 	{
 		this->number = number;
 		this->type = type;
@@ -32,22 +32,22 @@ public:
 		this->number = number;
 	}
 
-	void setType(std::string type)
+	void setType(string type)
 	{
 		this->type = type;
 	}
 
-	void setDestination(std::string destination)
+	void setDestination(string destination)
 	{
 		this->destination = destination;
 	}
 
-	void setStartTime(std::string startTime)
+	void setStartTime(string startTime)
 	{
 		this->startTime = startTime;
 	}
 
-	void setEndTime(std::string endTime)
+	void setEndTime(string endTime)
 	{
 		this->endTime = endTime;
 	}
@@ -57,23 +57,23 @@ public:
 		return number;
 	}
 
-	std::string getType()
+	string getType()
 	{
 		return type;
 	}
 
-	std::string getDestination()
+	string getDestination()
 	{
 		return destination;
 	}
 
-	std::string getStartTime()
+	string getStartTime()
 	{
 		return startTime;
 	}
 
-	std::string getEndTime()
+	string getEndTime()
 	{
 		return endTime;
 	}
-	};
+};
